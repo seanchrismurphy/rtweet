@@ -369,8 +369,8 @@ longlat <- function (data, by = NULL)
   }
   else {
     # First, pull out the point estimates
-    data$long <- sapply(data$geo, function(x) x[1])
-    data$lat <- sapply(data$geo, function(x) x[2])
+    data$long <- data$geo[,1]
+    data$lat <- data$geo[,2]
     
     # Encode the type - copy place type, so we can use this
     # to distinguish point, city, admin, etc in one column.  
