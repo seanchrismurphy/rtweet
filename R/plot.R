@@ -356,19 +356,32 @@ go.lat <- function(data)
 
 #' longlat
 #'
-#' Add long and lat variables to data frame
+#' Add long and lat variables to data frame, preferentially using point geography, then falling
+#' back on place geography where available. Stores the type of geography used in geo_type.
 #'
 #' @param data Twitter data
 #' @param by Unit of time
 #' @export
-longlat <- function(data, by = NULL) {
-    if (!is.null(by)) {
-        data <- ts_plot(data, by, plot = FALSE)
-    } else {
-        data$long <- go.long(data)
-        data$lat <- go.lat(data)
-    }
-    data
+longlat <- function (data, by = NULL) 
+{
+  if (!is.null(by)) {
+    data <- ts_plot(data, by, plot = FALSE)
+  }
+  else {
+    # First, pull out the point estimates
+    data$long <- sapply(data$geo, function(x) x[1])
+    data$lat <- sapply(data$geo, function(x) x[2])
+    
+    # Encode the type - copy place type, so we can use this
+    # to distinguish point, city, admin, etc in one column.  
+    data$geo_type <- data$place_type
+    data$geo_type[!is.na(data$long)] <- 'point'
+    
+    # Try to get coords from place, only where we don't already have them
+    data$long[is.na(data$long)] <- go.long(data)[is.na(data$long)]
+    data$lat[is.na(data$lat)] <- go.lat(data)[is.na(data$lat)]
+  }
+  data
 }
 
 #' alphacolor

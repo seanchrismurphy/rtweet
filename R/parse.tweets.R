@@ -265,8 +265,10 @@ tweets_place_df <- function(dat, n = NULL) {
   place_df <- data.frame(
     place_name = rep(NA_character_, n),
     country = rep(NA_character_, n),
+    place_type = rep(NA_character_, n),
     coordinates = I(matrix(rep(matrix(NA_real_, 1, 8), n), ncol = 8)),
-  	stringsAsFactors = FALSE)
+    geo = rep(NA_real_, n),
+    stringsAsFactors = FALSE)
 
   if ("place" %in% names(dat)) {
     place <- dat[["place"]]
@@ -277,6 +279,10 @@ tweets_place_df <- function(dat, n = NULL) {
     if ("country" %in% names(place)) {
       place_df$country <- return_with_NA(place[["country"]], n)
     }
+    
+    if ("place_type" %in% names(place)) {
+      place_df$place_type <- return_with_NA(place[["place_type"]])
+    }
 
     if ("bounding_box" %in% names(place)) {
       bounding_box <- place[["bounding_box"]]
@@ -285,6 +291,14 @@ tweets_place_df <- function(dat, n = NULL) {
         coordinates <- bounding_box[["coordinates"]]
         place_df$coordinates <- t(sapply(coordinates, make_coords))
       }
+    }
+  }
+  
+  if ("coordinates" %in% names(dat)) {
+    geo <- dat[["coordinates"]]
+    
+    if ("coordinates" %in% names(geo)) {
+      place_df$geo <- return_with_NA(geo[['coordinates']], n)
     }
   }
   place_df
