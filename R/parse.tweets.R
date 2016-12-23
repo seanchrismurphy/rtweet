@@ -267,7 +267,7 @@ tweets_place_df <- function(dat, n = NULL) {
     country = rep(NA_character_, n),
     place_type = rep(NA_character_, n),
     coordinates = I(matrix(rep(matrix(NA_real_, 1, 8), n), ncol = 8)),
-    geo = rep(NA_character_, n),
+    geo = I(matrix(rep(matrix(NA_real_, 1, 2), n), ncol = 2)),
     stringsAsFactors = FALSE)
 
   if ("place" %in% names(dat)) {
