@@ -93,7 +93,8 @@ stream_tweets <- function(q = "",
                           token = NULL,
                           file_name = NULL,
                           gzip = FALSE,
-                          verbose = TRUE, ...) {
+                          verbose = TRUE, 
+                          lang = NULL, ...) {
 
     ope <- options()
     options(encoding = "UTF-8")
@@ -111,12 +112,12 @@ stream_tweets <- function(q = "",
 
     if (missing(q)) q <- ""
 
-    if (identical(q, "")) {
+    if (identical(q, "") & is.null(LANG)) {
         query <- "statuses/sample"
         params <- NULL
     } else {
         query <- "statuses/filter"
-        params <- stream_params(q, ...)
+        params <- stream_params(q, lang, ...)
     }
 
     url <- make_url(
@@ -242,7 +243,7 @@ parse_stream <- function(file_name, clean_tweets = TRUE,
 }
 
 #' @keywords internal
-stream_params <- function(stream, ...) {
+stream_params <- function(stream, lang, ...) {
     if (length(stream) > 1) {
         params <- list(locations = paste(stream, collapse = ","))
     } else if (!all(suppressWarnings(is.na(as.numeric(stream))))) {
@@ -253,6 +254,11 @@ stream_params <- function(stream, ...) {
         params <- list(track = stream, ...)
     }
     params[["filter_level"]] <- "low"
+    
+    if (!is.null(lang)) {
+      params[['language']] <- lang
+    }
+    
     params
 }
 
