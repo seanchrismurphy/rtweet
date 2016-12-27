@@ -112,7 +112,7 @@ stream_tweets <- function(q = "",
 
     if (missing(q)) q <- ""
 
-    if (identical(q, "") & is.null(lang)) {
+    if (identical(q, ""))  {
         query <- "statuses/sample"
         params <- NULL
     } else {
